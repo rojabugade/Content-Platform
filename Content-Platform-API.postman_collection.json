@@ -1,0 +1,198 @@
+{
+  "info": {
+    "name": "Content Platform API",
+    "description": "Single Spring Boot Application - Complete API Testing Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Get OAuth2 Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic Y29udGVudC1wbGF0Zm9ybS1jbGllbnQ6c2VjcmV0",
+            "description": "Base64 encoded: content-platform-client:secret"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "grant_type",
+              "value": "client_credentials"
+            },
+            {
+              "key": "scope",
+              "value": "content.read content.write"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/oauth2/token",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["oauth2", "token"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. Create Content",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE",
+            "description": "Copy access_token from Get OAuth2 Token response"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"My First Article\",\n  \"body\": \"This is the content of my article\",\n  \"status\": \"DRAFT\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/content",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "content"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Get All Content",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE",
+            "description": "Copy access_token from Get OAuth2 Token response"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/content",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "content"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Get Content by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE",
+            "description": "Copy access_token from Get OAuth2 Token response"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/content/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "content", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. Update Content",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE",
+            "description": "Copy access_token from Get OAuth2 Token response"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated Title\",\n  \"body\": \"Updated content\",\n  \"status\": \"PUBLISHED\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/content/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "content", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. Delete Content",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE",
+            "description": "Copy access_token from Get OAuth2 Token response"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/content/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "content", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7. Get Health Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/actuator/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["actuator", "health"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "8. Get JWK Keys (for validation)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/oauth2/jwks",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["oauth2", "jwks"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
