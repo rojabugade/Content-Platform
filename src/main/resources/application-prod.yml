@@ -4,8 +4,6 @@ spring:
   
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://postgres:5432/contentdb}
-    username: ${DB_USERNAME:app}
-    password: ${DB_PASSWORD:app}
     driver-class-name: org.postgresql.Driver
   
   jpa:
@@ -24,8 +22,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080
-          jwk-set-uri: http://localhost:8080/oauth2/jwks
+          issuer-uri: ${JWT_ISSUER_URI:http://localhost:8080}
+          jwk-set-uri: ${JWT_JWK_SET_URI:http://localhost:8080/oauth2/jwks}
 
 server:
   port: ${PORT:8080}
@@ -42,4 +40,4 @@ management:
 logging:
   level:
     root: INFO
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
