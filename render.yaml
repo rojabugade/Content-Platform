@@ -1,0 +1,65 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: content-platform-db
+    env: docker
+    plan: free
+    disk:
+      name: postgres-data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 1
+    envVars:
+      - key: POSTGRES_DB
+        value: contentdb
+      - key: POSTGRES_USER
+        value: app
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+
+  # Spring Boot Backend API
+  - type: web
+    name: content-platform-api
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: content-platform-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        value: app
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: content-platform-db
+          property: password
+      - key: REDIS_URL
+        value: redis://red-placeholder:6379
+      - key: JWT_ISSUER_URI
+        fromService:
+          type: web
+          name: content-platform-api
+          property: host
+      - key: JWT_JWK_SET_URI
+        fromService:
+          type: web
+          name: content-platform-api
+          property: host
+        sync: false
+
+  # Next.js Frontend
+  - type: web
+    name: content-platform-web
+    env: docker
+    plan: free
+    dockerfilePath: ./web/Dockerfile
+    dockerContext: ./web
+    envVars:
+      - key: NEXT_PUBLIC_API_BASE
+        fromService:
+          type: web
+          name: content-platform-api
+          property: host
+        sync: false
