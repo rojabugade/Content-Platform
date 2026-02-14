@@ -38,6 +38,7 @@ public class DataInitializer implements CommandLineRunner {
         item1.setStatus(ContentItem.Status.PUBLISHED);
         item1.setPublishedAt(Instant.now().minusSeconds(86400));
         item1.setCreatedBy("sarah.williams");
+        item1.setLastModifiedBy("sarah.williams");
         item1.setApprovedBy("james.chen");
         item1.setApprovedAt(Instant.now().minusSeconds(172800));
         item1.setVersion(1);
@@ -72,6 +73,7 @@ public class DataInitializer implements CommandLineRunner {
         item2.setStatus(ContentItem.Status.PUBLISHED);
         item2.setPublishedAt(Instant.now().minusSeconds(259200));
         item2.setCreatedBy("tanaka.yuki");
+        item2.setLastModifiedBy("tanaka.yuki");
         item2.setApprovedBy("suzuki.kenji");
         item2.setApprovedAt(Instant.now().minusSeconds(345600));
         item2.setVersion(2);
@@ -97,6 +99,7 @@ public class DataInitializer implements CommandLineRunner {
         item3.setStatus(ContentItem.Status.PUBLISHED);
         item3.setPublishedAt(Instant.now().minusSeconds(432000));
         item3.setCreatedBy("ivanov.boris");
+        item3.setLastModifiedBy("ivanov.boris");
         item3.setApprovedBy("volkov.dmitri");
         item3.setApprovedAt(Instant.now().minusSeconds(518400));
         item3.setVersion(1);
@@ -122,6 +125,7 @@ public class DataInitializer implements CommandLineRunner {
         item4.setStatus(ContentItem.Status.PUBLISHED);
         item4.setPublishedAt(Instant.now().minusSeconds(604800));
         item4.setCreatedBy("alice.johnson");
+        item4.setLastModifiedBy("alice.johnson");
         item4.setApprovedBy("bob.smith");
         item4.setApprovedAt(Instant.now().minusSeconds(691200));
         item4.setVersion(3);
@@ -147,6 +151,7 @@ public class DataInitializer implements CommandLineRunner {
         item5.setStatus(ContentItem.Status.PUBLISHED);
         item5.setPublishedAt(Instant.now().minusSeconds(172800));
         item5.setCreatedBy("support.team");
+        item5.setLastModifiedBy("support.team");
         item5.setApprovedBy("manager.jp");
         item5.setApprovedAt(Instant.now().minusSeconds(259200));
         item5.setVersion(1);

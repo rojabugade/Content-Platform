@@ -27,15 +27,6 @@ type ContentView = {
   internal: boolean;
 };
 
-const CONTENT_TYPE_ICONS: Record<string, string> = {
-  ARTICLE: "📰",
-  POLICY: "📋",
-  ANNOUNCEMENT: "📢",
-  CAMPAIGN: "🎯",
-  GUIDELINE: "📘",
-  FAQ: "❓",
-};
-
 export default function ContentPage() {
   const params = useParams<{ id: string }>();
   const sp = useSearchParams();
@@ -60,14 +51,11 @@ export default function ContentPage() {
 
   if (err) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--background)" }}>
-        <div className="card" style={{ maxWidth: "500px", textAlign: "center" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⚠️</div>
-          <h2 style={{ marginBottom: "1rem", color: "var(--danger)" }}>Error Loading Content</h2>
-          <p style={{ color: "#64748b", marginBottom: "1.5rem" }}>{err}</p>
-          <Link href="/" className="btn btn-primary">
-            ← Back to Feed
-          </Link>
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div className="panel" style={{ maxWidth: "520px", textAlign: "center" }}>
+          <h2 style={{ marginBottom: "0.75rem", color: "var(--danger)" }}>Unable to load content</h2>
+          <p className="subtle" style={{ marginBottom: "1.25rem" }}>{err}</p>
+          <Link href="/" className="btn btn-primary">Return to published</Link>
         </div>
       </div>
     );
@@ -75,169 +63,75 @@ export default function ContentPage() {
 
   if (!data) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--background)" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⏳</div>
-          <p style={{ color: "#64748b" }}>Loading content...</p>
-        </div>
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <p className="subtle">Loading content...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--background)" }}>
-      {/* Header */}
-      <header
-        style={{
-          background: "var(--card-bg)",
-          borderBottom: "1px solid var(--border)",
-          padding: "1rem 2rem",
-          boxShadow: "0 1px 3px var(--shadow)",
-        }}
-      >
-        <div style={{ maxWidth: "1000px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Link href="/" style={{ color: "var(--primary)", textDecoration: "none", fontWeight: "600" }}>
-            ← Back to Feed
-          </Link>
-          
-          {/* Language Switcher */}
-          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-            <span style={{ fontSize: "0.875rem", fontWeight: "600" }}>🗣️ Language:</span>
-            <div style={{ display: "flex", gap: "0.25rem" }}>
-              {data.availableLanguages.map((l) => (
-                <button
-                  key={l}
-                  onClick={() => setLang(l)}
-                  style={{
-                    padding: "0.375rem 0.75rem",
-                    background: l === lang ? "var(--primary)" : "var(--border)",
-                    color: l === lang ? "white" : "var(--foreground)",
-                    border: "none",
-                    borderRadius: "0.375rem",
-                    fontSize: "0.75rem",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  {l.toUpperCase()}
-                </button>
-              ))}
-            </div>
-            {data.availableLanguages.length > 1 && data.selectedLanguage !== lang && (
-              <span style={{ fontSize: "0.75rem", color: "#64748b", marginLeft: "0.5rem" }}>
-                ✨ Fallback available
-              </span>
-            )}
+    <div>
+      <header className="topbar">
+        <div className="brand">
+          <div className="logo">RB</div>
+          <div>
+            <h1>Content detail</h1>
+            <p className="subtle">RB Bank content view</p>
           </div>
         </div>
+        <nav className="nav">
+          <Link href="/">Published</Link>
+          <Link href="/drafts">Drafts</Link>
+          <Link href="/approvals">Approvals</Link>
+        </nav>
       </header>
 
-      {/* Content */}
-      <main style={{ maxWidth: "1000px", margin: "2rem auto", padding: "0 2rem" }}>
-        {/* Metadata Card */}
-        <div className="card" style={{ marginBottom: "2rem" }}>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem", marginBottom: "1rem" }}>
-            <span style={{ fontSize: "3rem" }}>{CONTENT_TYPE_ICONS[data.contentType] || "📄"}</span>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
-                <span className="badge" style={{ background: "var(--primary)", color: "white" }}>
-                  {data.contentType}
-                </span>
-                <span className="badge" style={{ background: "var(--success)", color: "white" }}>
-                  {data.status}
-                </span>
-                <span className="badge" style={{ background: "var(--warning)", color: "white" }}>
-                  {data.priority}
-                </span>
-                {data.internal && (
-                  <span className="badge" style={{ background: "var(--secondary)", color: "white" }}>
-                    🔒 INTERNAL
-                  </span>
-                )}
-                <span className="badge" style={{ background: "var(--border)", color: "var(--foreground)" }}>
-                  v{data.version}
-                </span>
-              </div>
-
-              <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", fontSize: "0.875rem", color: "#64748b" }}>
-                <span>🌍 {data.region}</span>
-                <span>📂 {data.category}</span>
-                <span>📅 {new Date(data.publishedAt).toLocaleString()}</span>
-                <span>👤 {data.createdBy}</span>
-                {data.approvedBy && <span>✅ Approved by {data.approvedBy}</span>}
-              </div>
-
-              {data.tags.length > 0 && (
-                <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.75rem" }}>
-                  {data.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      style={{
-                        padding: "0.25rem 0.625rem",
-                        background: "var(--border)",
-                        borderRadius: "0.375rem",
-                        fontSize: "0.75rem",
-                        color: "var(--foreground)",
-                      }}
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <article
-          className="card"
-          style={{
-            fontSize: "1.125rem",
-            lineHeight: "1.8",
-          }}
-        >
-          <h1 style={{ fontSize: "2.5rem", fontWeight: "700", marginBottom: "1.5rem", lineHeight: "1.2" }}>
-            {data.title}
-          </h1>
-          
-          <div
-            style={{
-              borderTop: "2px solid var(--border)",
-              paddingTop: "1.5rem",
-            }}
-            dangerouslySetInnerHTML={{ __html: data.bodyHtml }}
-          />
-        </article>
-
-        {/* Version History Footer */}
-        <div
-          className="card"
-          style={{
-            marginTop: "2rem",
-            background: "var(--background)",
-            borderStyle: "dashed",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <main className="app-shell">
+        <section className="panel" style={{ marginBottom: "1.5rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
             <div>
-              <div style={{ fontSize: "0.875rem", fontWeight: "600", marginBottom: "0.25rem" }}>
-                📋 Version History & Audit Trail
-              </div>
-              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
-                Created by {data.createdBy} on {new Date(data.createdAt).toLocaleString()}
-                {data.approvedBy && ` • Approved by ${data.approvedBy} on ${new Date(data.approvedAt!).toLocaleString()}`}
-              </div>
+              <h2 className="panel-title">{data.title}</h2>
+              <p className="subtle">
+                {data.region} | {data.category} | {data.contentType}
+              </p>
             </div>
-            <button
-              className="btn"
-              style={{ background: "var(--border)", color: "var(--foreground)", fontSize: "0.875rem" }}
-            >
-              📜 View Full History
-            </button>
+            <div className="field" style={{ minWidth: "160px" }}>
+              <label>Language</label>
+              <select value={lang} onChange={(e) => setLang(e.target.value)}>
+                {data.availableLanguages.map((l) => (
+                  <option key={l} value={l}>
+                    {l.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
+
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "1rem" }}>
+            <span className="pill accent">{data.status}</span>
+            <span className="pill">{data.priority}</span>
+            <span className="pill">v{data.version}</span>
+            {data.internal && <span className="pill">Internal</span>}
+          </div>
+
+          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "0.75rem" }}>
+            <span className="subtle">Published: {new Date(data.publishedAt).toLocaleString()}</span>
+            <span className="subtle">Created by {data.createdBy}</span>
+            {data.approvedBy && <span className="subtle">Approved by {data.approvedBy}</span>}
+          </div>
+
+          {data.tags.length > 0 && (
+            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.75rem" }}>
+              {data.tags.map((tag) => (
+                <span key={tag} className="tag">#{tag}</span>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <article className="panel" style={{ fontSize: "1.05rem", lineHeight: 1.8 }}>
+          <div dangerouslySetInnerHTML={{ __html: data.bodyHtml }} />
+        </article>
       </main>
     </div>
   );

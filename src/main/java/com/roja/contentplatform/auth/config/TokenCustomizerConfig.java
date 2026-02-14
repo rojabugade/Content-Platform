@@ -24,11 +24,15 @@ public class TokenCustomizerConfig {
           .toList();
       context.getClaims().claim("roles", roles);
 
-      // Demo region assignment based on username (replace later with DB)
-      String username = principal.getName();
-      if ("admin".equals(username)) {
+      // Demo region assignment based on username/client (replace later with DB)
+      String principal_name = principal.getName();
+      
+      // OAuth2 client gets all regions
+      if ("content-platform-client".equals(principal_name)) {
         context.getClaims().claim("regions", List.of("US", "JP", "RU"));
-      } else if ("editor".equals(username)) {
+      } else if ("admin".equals(principal_name)) {
+        context.getClaims().claim("regions", List.of("US", "JP", "RU"));
+      } else if ("editor".equals(principal_name)) {
         context.getClaims().claim("regions", List.of("JP"));
       } else {
         context.getClaims().claim("regions", List.of("US"));
