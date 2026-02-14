@@ -25,7 +25,25 @@ type ContentView = {
   approvedAt: string | null;
   version: number;
   internal: boolean;
+  coverImage?: string;
 };
+
+type DraftEntry = {
+  id: number;
+  coverImage?: string;
+};
+
+const STORAGE_KEY = "rb_drafts";
+
+function loadDrafts(): DraftEntry[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as DraftEntry[]) : [];
+  } catch {
+    return [];
+  }
+}
 
 export default function ContentPage() {
   const params = useParams<{ id: string }>();
@@ -42,7 +60,16 @@ export default function ContentPage() {
         setErr(null);
         const token = await getToken();
         const res = await apiFetch(`/api/v1/content/${params.id}/view?lang=${lang}`, token);
-        setData(res);
+        
+        // Load drafts from localStorage to get cover image
+        const drafts = loadDrafts();
+        const draft = drafts.find(d => d.id === parseInt(params.id));
+        
+        // Merge cover image from localStorage
+        setData({
+          ...res,
+          coverImage: res.coverImage || draft?.coverImage
+        });
       } catch (e: any) {
         setErr(e.message);
       }
@@ -73,16 +100,17 @@ export default function ContentPage() {
     <div>
       <header className="topbar">
         <div className="brand">
-          <div className="logo">RB</div>
+          <Link href="/">
+            <div className="logo">RB</div>
+          </Link>
           <div>
-            <h1>Content detail</h1>
-            <p className="subtle">RB Bank content view</p>
+            <h1>RB Bank Content Publisher</h1>
+            <p className="subtle">RB is the award-winning content, data, analytics and trading platform for Institutional and Corporate clients.</p>
           </div>
         </div>
         <nav className="nav">
           <Link href="/">Published</Link>
-          <Link href="/drafts">Drafts</Link>
-          <Link href="/approvals">Approvals</Link>
+          <Link href="/drafts">Dashboard</Link>
         </nav>
       </header>
 
@@ -128,6 +156,13 @@ export default function ContentPage() {
             </div>
           )}
         </section>
+
+        {/* Cover Image */}
+        {data.coverImage && (
+          <div style={{ marginBottom: "1.5rem", borderRadius: "14px", overflow: "hidden", boxShadow: "0 4px 12px var(--shadow)", aspectRatio: "16 / 6" }}>
+            <img src={data.coverImage} alt={data.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          </div>
+        )}
 
         <article className="panel" style={{ fontSize: "1.05rem", lineHeight: 1.8 }}>
           <div dangerouslySetInnerHTML={{ __html: data.bodyHtml }} />

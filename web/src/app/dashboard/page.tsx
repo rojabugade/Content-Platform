@@ -7,7 +7,9 @@ export default function DashboardHub() {
     <div>
       <header className="topbar">
         <div className="brand">
-          <div className="logo">RB</div>
+          <Link href="/">
+            <div className="logo">RB</div>
+          </Link>
           <div>
             <h1>RB Bank Content Publisher</h1>
             <p className="subtle">Choose a workspace to continue</p>
@@ -15,8 +17,7 @@ export default function DashboardHub() {
         </div>
         <nav className="nav">
           <Link href="/">Published</Link>
-          <Link href="/drafts">Drafts</Link>
-          <Link href="/approvals">Approvals</Link>
+          <Link href="/drafts">Dashboard</Link>
         </nav>
       </header>
 
@@ -24,28 +25,21 @@ export default function DashboardHub() {
         <section className="panel">
           <h2 className="panel-title">Content workspaces</h2>
           <p className="subtle" style={{ marginBottom: "1.5rem" }}>
-            Keep the flow simple: create drafts, send for approval, then publish.
+            Manage your content lifecycle in one unified dashboard.
           </p>
-          <div className="grid-3">
+          <div className="grid-2">
             <div className="panel">
-              <h3>Published dashboard</h3>
-              <p className="subtle">Review live content by region and language.</p>
+              <h3>Published Content</h3>
+              <p className="subtle">View live content by region and language with rich cover images.</p>
               <Link className="btn btn-primary" href="/">
-                Open published
+                View published
               </Link>
             </div>
             <div className="panel">
-              <h3>Draft studio</h3>
-              <p className="subtle">Write drafts and submit them for approval.</p>
+              <h3>Content Dashboard</h3>
+              <p className="subtle">Create drafts, manage recent drafts, and review content for approval.</p>
               <Link className="btn btn-primary" href="/drafts">
-                Create drafts
-              </Link>
-            </div>
-            <div className="panel">
-              <h3>Approvals</h3>
-              <p className="subtle">Admin reviews and publishes pending drafts.</p>
-              <Link className="btn btn-primary" href="/approvals">
-                Review approvals
+                Open dashboard
               </Link>
             </div>
           </div>

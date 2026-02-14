@@ -25,7 +25,25 @@ type FeedItem = {
   approvedAt: string | null;
   version: number;
   internal: boolean;
+  coverImage?: string;
 };
+
+type DraftEntry = {
+  id: number;
+  coverImage?: string;
+};
+
+const STORAGE_KEY = "rb_drafts";
+
+function loadDrafts(): DraftEntry[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as DraftEntry[]) : [];
+  } catch {
+    return [];
+  }
+}
 
 const REGIONS = [
   { code: "US", label: "US" },
@@ -54,7 +72,18 @@ export default function PublishedDashboard() {
         setLoading(true);
         const token = await getToken();
         const data = await apiFetch(`/api/v1/feed?region=${region}&lang=${lang}`, token);
-        setItems(data);
+        
+        // Load drafts from localStorage to get cover images
+        const drafts = loadDrafts();
+        const draftMap = new Map(drafts.map(d => [d.id, d]));
+        
+        // Merge cover images from localStorage with API data
+        const itemsWithImages = data.map((item: FeedItem) => ({
+          ...item,
+          coverImage: item.coverImage || draftMap.get(item.id)?.coverImage
+        }));
+        
+        setItems(itemsWithImages);
       } catch (e: any) {
         setErr(e.message);
       } finally {
@@ -75,7 +104,9 @@ export default function PublishedDashboard() {
     <div>
       <header className="topbar">
         <div className="brand">
-          <div className="logo">RB</div>
+          <Link href="/">
+            <div className="logo">RB</div>
+          </Link>
           <div>
             <h1>RB Bank Content Publisher</h1>
             <p className="subtle">RB is the award-winning content, data, analytics and trading platform for Institutional and Corporate clients.</p>
@@ -83,8 +114,7 @@ export default function PublishedDashboard() {
         </div>
         <nav className="nav">
           <Link className="active" href="/">Published</Link>
-          <Link href="/drafts">Drafts</Link>
-          <Link href="/approvals">Approvals</Link>
+          <Link href="/drafts">Dashboard</Link>
         </nav>
       </header>
 
@@ -160,37 +190,42 @@ export default function PublishedDashboard() {
           )}
 
           {publishedItems.length > 0 && (
-            <div style={{ marginTop: "1rem", overflowX: "auto" }}>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Region</th>
-                    <th>Language</th>
-                    <th>Category</th>
-                    <th>Status</th>
-                    <th>Published</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {publishedItems.map((item) => (
-                    <tr key={item.id}>
-                      <td>
-                        <Link href={`/content/${item.id}?lang=${lang}`}>
-                          {item.title}
-                        </Link>
-                      </td>
-                      <td>{item.region}</td>
-                      <td>{item.displayLanguage.toUpperCase()}</td>
-                      <td>{item.category}</td>
-                      <td>
-                        <span className="pill accent">{item.status}</span>
-                      </td>
-                      <td>{new Date(item.publishedAt).toLocaleDateString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div style={{ 
+              marginTop: "1.5rem", 
+              display: "grid", 
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", 
+              gap: "1.25rem" 
+            }}>
+              {publishedItems.map((item) => (
+                <Link 
+                  key={item.id} 
+                  href={`/content/${item.id}?lang=${lang}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <div className="content-tile">
+                    <div className="tile-cover">
+                      {item.coverImage ? (
+                        <img src={item.coverImage} alt={item.title} />
+                      ) : (
+                        <div className="tile-default-cover">
+                          <div className="logo">RB</div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="tile-body">
+                      <h3>{item.title}</h3>
+                      <div className="tile-meta">
+                        <span className="pill">{item.category}</span>
+                        <span className="subtle">{item.region}</span>
+                        <span className="subtle">{item.displayLanguage.toUpperCase()}</span>
+                      </div>
+                      <div className="tile-footer">
+                        <span className="subtle">{new Date(item.publishedAt).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
             </div>
           )}
         </section>
