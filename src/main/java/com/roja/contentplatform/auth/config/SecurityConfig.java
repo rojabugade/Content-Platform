@@ -1,6 +1,7 @@
 package com.roja.contentplatform.auth.config;
 
 import com.nimbusds.jose.JOSEException;
+import org.springframework.beans.factory.annotation.Value;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -147,9 +148,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthorizationServerSettings authorizationServerSettings() {
+    public AuthorizationServerSettings authorizationServerSettings(
+            @Value("${JWT_ISSUER_URI:http://localhost:8080}") String issuer) {
         return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:8080")
+                .issuer(issuer)
                 .build();
     }
 }
