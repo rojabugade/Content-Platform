@@ -1,0 +1,2 @@
+# Treat all JavaScript files as Java for stats
+*.tsx linguist-language=Java
